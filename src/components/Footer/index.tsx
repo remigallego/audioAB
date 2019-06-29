@@ -6,9 +6,17 @@ const Footer: React.FC = () => {
   return (
     <Wrapper>
       <TextWrapper>
-        <Text>github</Text>
-        <Text>twitter</Text>
-        <Text>about me</Text>
+        <Text
+          onClick={() => window.open("https://github.com/remigallego/audioAB")}
+        >
+          github
+        </Text>
+        <Text onClick={() => window.open("https://twitter.com/remigallego")}>
+          twitter
+        </Text>
+        <Text onClick={() => window.open("https://remigallego.com")}>
+          about me
+        </Text>
       </TextWrapper>
     </Wrapper>
   );
