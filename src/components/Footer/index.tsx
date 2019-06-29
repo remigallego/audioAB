@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import colors from "../../colors";
 
 const Footer: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ const Wrapper = styled.section`
   height: 3%;
   display: flex;
   justify-content: center;
-  background-color: black;
+  background-color: ${colors.black};
   color: white;
 `;
 
@@ -37,6 +38,6 @@ const Text = styled.div`
   transition: all 0.3s;
   cursor: pointer;
   :hover {
-    color: red;
+    color: ${colors.fifthiary};
   }
 `;

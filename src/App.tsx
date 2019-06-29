@@ -13,21 +13,34 @@ const App: React.FC = () => {
   const [position, setPosition] = useState(0);
   const [isEmpty, toggleEmpty] = useState(true);
 
+  document.addEventListener(
+    "keydown",
+    ev => {
+      if (ev.keyCode === 32) {
+        toggleButton(!isA);
+      }
+      if (ev.keyCode === 13) {
+        togglePlay(!isPlaying);
+      }
+    },
+    { once: true }
+  );
+
   const handleSeek = (position: number) => setPosition(position);
 
   return (
     <AppWrapper>
       <WaveformsWrapper>
         <AbsoluteCenter>
-          <ButtonCircle isA={isA} toggleButton={() => toggleButton(!isA)} />
-        </AbsoluteCenter>
-        <AbsoluteLeft>
           <PlayButton
             handlePlay={() => !isEmpty && togglePlay(true)}
             handlePause={() => !isEmpty && togglePlay(false)}
             isPlaying={isPlaying}
           />
-        </AbsoluteLeft>
+          <div style={{ marginRight: 20 }} />
+          <ButtonCircle isA={isA} toggleButton={() => toggleButton(!isA)} />
+        </AbsoluteCenter>
+
         <Waveform
           isPlaying={isPlaying}
           isActive={isA}
@@ -69,12 +82,7 @@ const AbsoluteCenter = styled.section`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-`;
-
-const AbsoluteLeft = styled.section`
-  position: absolute;
-  top: 50%;
-  left: 30%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
 `;

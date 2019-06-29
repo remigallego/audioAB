@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import WaveSurfer from "wavesurfer.js";
+import colors from "../../colors";
+import { ClipLoader } from "react-spinners";
 
 interface Props {
   isPlaying: boolean;
@@ -16,22 +18,26 @@ interface AudioFile {
   name: string;
 }
 
+const activeWaveColor = "white";
+
 const Waveform = (props: Props) => {
   let waveref: HTMLDivElement;
   let containerRef: HTMLElement;
 
-  const [isDragOver, setDragOver] = useState(false);
+  const [isDragOver, setDragOver] = useState<boolean>(false);
   const [audioFile, setAudioFile] = useState<AudioFile>();
   const [wavesurfer, setWaveSurfer] = useState<WaveSurfer>();
+  const [loading, toggleLoading] = useState<boolean>();
 
   useEffect(() => {
-    if (wavesurfer) {
+    if (wavesurfer && audioFile && !loading) {
       wavesurfer.seekTo(props.position);
     }
   }, [props.position]);
   useEffect(() => {
     if (wavesurfer) {
       wavesurfer.setMute(!props.isActive);
+      wavesurfer.setWaveColor(props.isActive ? activeWaveColor : "white");
     }
   }, [props.isActive]);
 
@@ -47,8 +53,12 @@ const Waveform = (props: Props) => {
 
   useEffect(() => {
     if (audioFile && wavesurfer) {
+      toggleLoading(true);
       wavesurfer.loadBlob(audioFile.blob);
       props.toggleEmpty(false);
+      wavesurfer.on("ready", () => {
+        toggleLoading(false);
+      });
     }
   }, [audioFile]);
 
@@ -56,12 +66,13 @@ const Waveform = (props: Props) => {
     if (!wavesurfer) {
       const _wavesurfer = WaveSurfer.create({
         container: waveref,
-        waveColor: "blue",
+        waveColor: activeWaveColor,
         height: containerRef.offsetHeight,
         responsive: true,
         barWidth: 1,
-        progressColor: "purple",
-        hideScrollbar: true
+        progressColor: "#B28D8D",
+        hideScrollbar: true,
+        cursorWidth: 2
       });
       _wavesurfer.on("seek", position => {
         props.handleSeek(position);
@@ -93,7 +104,6 @@ const Waveform = (props: Props) => {
     setDragOver(false);
   };
 
-  console.log("isDragOver === ", isDragOver);
   return (
     <Wrapper
       ref={ref => {
@@ -105,13 +115,31 @@ const Waveform = (props: Props) => {
       isDragOver={isDragOver}
       isActive={props.isActive}
     >
-      {!audioFile && <AbsoluteCenter>Drag an audio file</AbsoluteCenter>}
-      <div
-        style={{ overflow: "hidden" }}
-        ref={ref => {
-          if (ref) waveref = ref;
-        }}
-      />
+      {!audioFile && (
+        <AbsoluteCenter isActive={props.isActive}>
+          <BorderDashed isActive={props.isActive}>
+            <Text className="drag-text">Drag an audio file</Text>
+          </BorderDashed>
+        </AbsoluteCenter>
+      )}
+      {loading && (
+        <AbsoluteCenter isActive={props.isActive}>
+          <ClipLoader />
+        </AbsoluteCenter>
+      )}
+      {audioFile && (
+        <TopLeft>
+          <Text>{audioFile.name}</Text>
+        </TopLeft>
+      )}
+      <WaveWrapper isActive={props.isActive}>
+        <div
+          style={{ overflow: "hidden" }}
+          ref={ref => {
+            if (ref) waveref = ref;
+          }}
+        />
+      </WaveWrapper>
     </Wrapper>
   );
 };
@@ -121,21 +149,43 @@ export default Waveform;
 const Wrapper = styled.div<{ isDragOver: boolean; isActive: boolean }>`
   width: 100%;
   height: 50%;
-  border: 1px solid black;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: whitesmoke;
+  background-color: silver;
   transition: all 0.3s;
   background-color: ${props => setBackgroundColor(props)};
-  border: ${props => (props.isDragOver ? "1px solid blue" : "1px solid black")};
+  position: relative;
 `;
 
-const AbsoluteCenter = styled.section`
+const WaveWrapper = styled.section<{ isActive: boolean }>`
+  opacity: ${props => (props.isActive ? 1 : 0.23)};
+`;
+
+const AbsoluteCenter = styled.section<{ isActive: boolean }>`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  font-size: 22px;
+  color: ${props => (props.isActive ? "white" : "black")};
+`;
+
+const BorderDashed = styled.section<{ isActive: boolean }>`
+  border: 1px dashed grey;
+  border-color: ${props => (props.isActive ? "grey" : "black")};
+  padding: 50px 100px;
+`;
+
+const Text = styled.section`
+  font-family: "Anonymous Pro";
+`;
+
+const TopLeft = styled.section`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
 `;
 
 const setBackgroundColor = ({
@@ -146,5 +196,5 @@ const setBackgroundColor = ({
   isActive: boolean;
 }) => {
   if (isDragOver) return "grey";
-  if (isActive) return "#9ea9f0";
+  if (isActive) return "#544242";
 };
