@@ -2,7 +2,7 @@
 
 ## Overview
 
-<a href="http://winampify.io">audioAB</a> is a small web app that allows you to compare two audio files at the push of a button.
+<a href="http://audioab.com">audioAB</a> is a small web app that allows you to compare two audio files at the push of a button.
 
 ## Stack
 
