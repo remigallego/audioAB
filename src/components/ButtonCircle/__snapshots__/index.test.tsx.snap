@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonCircle renders correctly 1`] = `
+<div
+  style={
+    Object {
+      "backgroundColor": "red",
+      "borderRadius": "50%",
+      "height": 100,
+      "width": 100,
+    }
+  }
+/>
+`;
