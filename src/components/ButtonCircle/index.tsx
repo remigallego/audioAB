@@ -10,8 +10,8 @@ const ButtonCircle = (props: Props) => {
   return (
     <Circle onClick={props.toggleButton}>
       <TextWrapper>
-        <PrimaryText>{props.isA ? "A" : "B"}</PrimaryText>
-        <SecondaryText>{props.isA ? "B" : "A"}</SecondaryText>
+        <Text isActive={props.isA}>A</Text>
+        <Text isActive={!props.isA}>B</Text>
       </TextWrapper>
     </Circle>
   );
@@ -23,18 +23,14 @@ const Circle = styled.section`
   width: 150px;
   height: 150px;
   background-color: blue;
-  font-family: "DM Serif Display";
   border-radius: 50%;
   position: relative;
   user-select: none;
 `;
 
-const PrimaryText = styled.section`
+const Text = styled.section<{ isActive: boolean }>`
   color: white;
-  font-size: 77px;
-`;
-const SecondaryText = styled.section`
-  color: grey;
+  opacity: ${props => (props.isActive ? 1 : 0.2)};
   font-size: 77px;
 `;
 

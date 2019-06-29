@@ -2,12 +2,21 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import WaveSurfer from "wavesurfer.js";
 
+interface Props {
+  isPlaying: boolean;
+  isActive: boolean;
+  position: number;
+  handleSeek: (position: number) => void;
+  togglePlay: () => void;
+  toggleEmpty: (val: boolean) => void;
+}
+
 interface AudioFile {
   blob: File;
   name: string;
 }
 
-const Waveform = () => {
+const Waveform = (props: Props) => {
   let waveref: HTMLDivElement;
   let containerRef: HTMLElement;
 
@@ -16,19 +25,46 @@ const Waveform = () => {
   const [wavesurfer, setWaveSurfer] = useState<WaveSurfer>();
 
   useEffect(() => {
-    if (audioFile && wavesurfer) wavesurfer.loadBlob(audioFile.blob);
+    if (wavesurfer) {
+      wavesurfer.seekTo(props.position);
+    }
+  }, [props.position]);
+  useEffect(() => {
+    if (wavesurfer) {
+      wavesurfer.setMute(!props.isActive);
+    }
+  }, [props.isActive]);
+
+  useEffect(() => {
+    if (wavesurfer) {
+      if (props.isPlaying) {
+        wavesurfer.setMute(!props.isActive);
+        wavesurfer.play();
+      }
+      if (!props.isPlaying) wavesurfer.pause();
+    }
+  }, [props.isPlaying]);
+
+  useEffect(() => {
+    if (audioFile && wavesurfer) {
+      wavesurfer.loadBlob(audioFile.blob);
+      props.toggleEmpty(false);
+    }
   }, [audioFile]);
 
   useEffect(() => {
     if (!wavesurfer) {
       const _wavesurfer = WaveSurfer.create({
         container: waveref,
-        waveColor: "violet",
+        waveColor: "blue",
         height: containerRef.offsetHeight,
         responsive: true,
         barWidth: 1,
         progressColor: "purple",
         hideScrollbar: true
+      });
+      _wavesurfer.on("seek", position => {
+        props.handleSeek(position);
       });
       setWaveSurfer(_wavesurfer);
     }
@@ -45,6 +81,7 @@ const Waveform = () => {
         name: file.name
       });
     }
+    if (props.isPlaying) props.togglePlay();
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
@@ -66,9 +103,9 @@ const Waveform = () => {
       onDragLeave={handleDragExit}
       onDrop={handleDrop}
       isDragOver={isDragOver}
+      isActive={props.isActive}
     >
       {!audioFile && <AbsoluteCenter>Drag an audio file</AbsoluteCenter>}
-
       <div
         style={{ overflow: "hidden" }}
         ref={ref => {
@@ -81,7 +118,7 @@ const Waveform = () => {
 
 export default Waveform;
 
-const Wrapper = styled.div<{ isDragOver: boolean }>`
+const Wrapper = styled.div<{ isDragOver: boolean; isActive: boolean }>`
   width: 100%;
   height: 50%;
   border: 1px solid black;
@@ -91,11 +128,23 @@ const Wrapper = styled.div<{ isDragOver: boolean }>`
   justify-content: center;
   background-color: whitesmoke;
   transition: all 0.3s;
-  background-color: ${props => (props.isDragOver ? "grey" : "whitesmoke")};
+  background-color: ${props => setBackgroundColor(props)};
   border: ${props => (props.isDragOver ? "1px solid blue" : "1px solid black")};
 `;
 
 const AbsoluteCenter = styled.section`
   position: absolute;
   left: 50%;
+  transform: translateX(-50%);
 `;
+
+const setBackgroundColor = ({
+  isDragOver,
+  isActive
+}: {
+  isDragOver: boolean;
+  isActive: boolean;
+}) => {
+  if (isDragOver) return "grey";
+  if (isActive) return "#9ea9f0";
+};
