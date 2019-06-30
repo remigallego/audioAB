@@ -12,24 +12,24 @@ const App: React.FC = () => {
   const [isPlaying, togglePlay] = useState(false);
   const [position, setPosition] = useState(0);
   const [isEmpty, toggleEmpty] = useState(true);
-
-  document.addEventListener(
-    "keydown",
-    ev => {
-      if (ev.keyCode === 32) {
-        toggleButton(!isA);
-      }
-      if (ev.keyCode === 13) {
-        togglePlay(!isPlaying);
-      }
-    },
-    { once: true }
-  );
+  const [keyDown, setKeyDown] = useState(false);
 
   const handleSeek = (position: number) => setPosition(position);
 
   return (
-    <AppWrapper>
+    <AppWrapper
+      onKeyDown={e => {
+        if (e.keyCode === 32) {
+          if (keyDown) return;
+          setKeyDown(true);
+          toggleButton(!isA);
+        }
+      }}
+      onKeyUp={e => {
+        if (e.keyCode === 32) setKeyDown(false);
+      }}
+      tabIndex={0}
+    >
       <WaveformsWrapper>
         <AbsoluteCenter>
           <PlayButton
