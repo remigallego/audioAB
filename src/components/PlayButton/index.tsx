@@ -30,22 +30,20 @@ const PlayButton = (props: Props) => {
   return (
     <Wrapper>
       {!props.isPlaying && (
-        <Circle>
+        <Circle onClick={props.handlePlay}>
           <FaPlay
             style={{ transform: "translate(10%, -10%)" }}
             color={"white"}
             size={40}
-            onClick={props.handlePlay}
           />
         </Circle>
       )}
       {props.isPlaying && (
-        <Circle>
+        <Circle onClick={props.handlePause}>
           <FaPause
             style={{ transform: "translate(0%, -10%)" }}
             color={"white"}
             size={40}
-            onClick={props.handlePause}
           />
         </Circle>
       )}

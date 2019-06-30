@@ -29,7 +29,7 @@ const Wrapper = styled.section`
   height: 3%;
   display: flex;
   justify-content: center;
-  background-color: ${colors.black};
+  background-color: ${colors.primary};
   color: white;
 `;
 
@@ -41,11 +41,11 @@ const TextWrapper = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 24px;
+  font-size: 20px;
   font-family: "DM Serif Display";
   transition: all 0.3s;
   cursor: pointer;
   :hover {
-    color: ${colors.fifthiary};
+    color: ${colors.secondary};
   }
 `;
