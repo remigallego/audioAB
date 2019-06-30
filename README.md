@@ -1,4 +1,4 @@
-<center><a href="http://audioab.com"><img src="./screenshot.png" /></a></center>
+<center><a href="http://audioab.com"><img src="./screenshot-audioab.png" /></a></center>
 
 ## Overview
 
