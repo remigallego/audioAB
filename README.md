@@ -28,6 +28,7 @@ This project is released under the MIT License.
 
 Components
 
-- Waveform
-- ButtonAB
+- ButtonCircle
+- PlayButton
 - Footer
+- Waveform
