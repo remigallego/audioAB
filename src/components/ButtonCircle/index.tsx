@@ -9,7 +9,7 @@ interface Props {
 
 const ButtonCircle = (props: Props) => {
   return (
-    <Circle onClick={props.toggleButton} className="button">
+    <Circle onMouseDown={props.toggleButton} className="button">
       <Text isActive={props.isA}>A</Text>
       <Text isActive={!props.isA}>B</Text>
     </Circle>
